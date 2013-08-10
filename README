@@ -1,1 +1,4 @@
-HELLO WORLD!!!!
+2-PASS ASSEMBLER
+Created by Rodrigo Rodriguez
+
+Writtin in C++, this 2-pass assembler converts SIC (Simulated Instructional Computer) instructions to their machine code equivalent.  Output is an object file that ready to be loaded into system memory.
