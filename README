@@ -3,5 +3,13 @@ Created by Rodrigo Rodriguez
 
 Writtin in C++, this 2-pass assembler converts SIC (Simulated Instructional Computer) instructions to their machine code equivalent.  Output is an object file that ready to be loaded into system memory. To initiate assembler functions, a command line interface was created. 
 
+CMDLINE, MESSAGE PROMPT header and cpp files:
+	These files feature the data structures and logic that decides how the		CLI responses to user commands. The structure featured in these files
+	call the various functions of the Assembler.
+ASSEMBLER, ASMLINE header and cpp files:
+	These code featured in these files are the actual assembler. They
+	include the Symbol table, Operations table.
 
 NOTE: Not all commands in the CLI have been implemented. Commands that are still being worked on will only display the name of the function that was called.
+
+
