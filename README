@@ -9,7 +9,9 @@ CMDLINE, MESSAGE PROMPT header and cpp files:
 	call the various functions of the Assembler.
 ASSEMBLER, ASMLINE header and cpp files:
 	These code featured in these files are the actual assembler. They
-	include the Symbol table, Operations table.
+	include the Symbol table, Operations table, and both passes. ASMLINE
+	structure data members include opcode, label, and argument. The 
+	Assembler stores the input assembly file in an array of ASMLINE structs
 
 NOTE: Not all commands in the CLI have been implemented. Commands that are still being worked on will only display the name of the function that was called.
 
