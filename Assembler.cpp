@@ -1,5 +1,4 @@
 #include "Precompiled.h"
-
 Assembler::Assembler(){
 	LOCCTR=0;
 
@@ -51,7 +50,7 @@ void Assembler::LoadFile(std::string filename){
 		if(OPtab.find(temp) != OPtab.end()){
 			line[count].label="N/A";
 			line[count].opcode=temp;
-			
+
 			if(line[count].opcode=="RSUB"){
 				line[count].argument="N/A";
 				inData.ignore(256, '\n');
@@ -87,6 +86,12 @@ void Assembler::AsmFile(){
 }
 
 void Assembler::PassOne(){
+	/*
+		Scans the input.txt file to add addresses to the items in the symbol data field of 
+		line
+	*/
+
+
 	char *p;
 	for(int it=0;line[it].opcode != "END"; it++)
 	{
@@ -100,7 +105,7 @@ void Assembler::PassOne(){
 		//label found, save label and current locctr to symbol table
 		if(line[it].label != "N/A")
 			SYMtab.insert(std::pair<std::string, int>(line[it].label, LOCCTR));
-	
+
 		//assembler directives found, assembler directives change the default
 		//location counter increment ( 3 ) depending on which assembler directive
 		//is found and their argument
@@ -119,6 +124,7 @@ void Assembler::PassOne(){
 		else
 			LOCCTR+=3;
 	}
+	displaySYM();
 }
 
 void Assembler::PassTwo(){
@@ -130,7 +136,7 @@ void Assembler::PassTwo(){
 		//operation code in opcode field
 		if((OPiter=OPtab.find(line[i].opcode)) != OPtab.end()){
 			if(line[i].opcode == "BYTE"){
-				ASMconstant=ParseArg(line[i].argument);
+				ASMconstant=ParseArg(line[i].argument);				
 				if(ASMconstant == "EOF")
 					outData<<"454F46"<<std::endl;
 				else
@@ -146,8 +152,9 @@ void Assembler::PassTwo(){
 			}
 			else if(line[i].opcode == "RESB" || line[i].opcode == "RESW")
 				continue;
-			else
+			else{
 				outData<<OPiter->second;
+			}
 		}
 		ASMconstant.clear();
 		//symbol in argument field
@@ -165,34 +172,35 @@ void Assembler::PassTwo(){
 				outData<<ASMconstant.c_str()<<std::endl; //write to outdata file
 			}
 		}
-		else
-			outData<<general.DecToHex1(SYMiter->second)<<std::endl;
-	}
+		else{
+			if((SYMiter=SYMtab.find(line[i].argument)) != SYMtab.end())
+				outData<<general.DecToHex1(SYMiter->second)<<std::endl;
+			else 
+				continue;
+		}
 }
 
+	}
 int Assembler::SizeOfarg(std::string arg){
 	std::string temp;
-	int i=0, j=0;;  //keep count
-	if(arg[0]=='X'){
-		i=1;
-		while(arg[++i] != '\''){j++;}
+	int i=0;  //keep count
 
-		if((j%2)==0)
-			return j/2;
+	while(arg[++i] != '\'')
+		temp+=arg[i];
+	if(arg[0] == 'X'){
+		if(arg.length()%2 == 0)
+			return (arg.length()%2)/2;
 		else
-			return (++j)/2;
+			return ((arg.length()%2)+1)/2;
 	}
-	else if(arg[0]=='C'){
-		while(arg[++i] != '\'')
-			temp+=arg[i];
+	else if(arg[0] == 'C'){
 		if((OPiter=OPtab.find(temp)) != OPtab.end())
 			return atoi(OPiter->second.c_str());
-		else 
+		else
 			return 3;
 	}
-	else{
+	else
 		return 3;
-	}
 }
 
 std::string Assembler::ParseArg(std::string arg){
